@@ -31,6 +31,7 @@ int main() {
     
     /*
         Set the Alphabet Diagram 
+        <space> ... z is in range from [1,27] for rows and cols
     */
     dp[0][1] = 35; //  add <space> ASCII at 0th row
     dp[1][0] = 35; //  add <space> ASCII at 0th col
