@@ -101,6 +101,7 @@ int main() {
     vector<int> cipherset;
     
     //  push cipher onto ciphertext
+    // should be improved through tokenization
     while(afs >> cipher >> comma) { cipherset.push_back(cipher); } 
     
     //  pull ciphers out of ciphertext into diagram
