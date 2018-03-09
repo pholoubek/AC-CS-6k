@@ -16,6 +16,8 @@ void displayAlph(const vector<vector<int>>& vec);
 void swap(vector<vector<int>>& vec, int target1, int target2);
 map<char, float>& makeFreqMap(map<char, float>& mp, const vector<vector<int>>& vec, const int size);
 map<int, float>& makeFreqMap(map<int, float>& mp, const vector<vector<int>>& vec, const int size);
+map<char, vector<int>>& initialKey(map<char, vector<int>>& keySet, const map<char,float>& fa, const map<int,float>& fc,int sizeC, const vector<int>& cipherT);
+
 
 int main() {
     ifstream ifs("test1_1.txt");
@@ -63,25 +65,45 @@ int main() {
         fc.insert(pair<int,float>(cipher,0));
     }   
     //  plug, it needs better solution through tokenization
-    sizeC = cipherset.size();
     afs >> cipher;  
     cipherset.push_back(cipher);
-    fc.insert(pair<int,float>(cipher,0));
     
-    
+    fc.insert(pair<int,float>(cipher,0));   
     vector<vector<int>> dc(fc.size() + 1, vector<int>(fc.size() + 1,0));    //  diagram for ciphers, initialized for cipher which exists
     
     dc = initiDC(dc, cipherset, fc);
+    //fc = makeFreqMap(fc, dc, sizeC);
+    sizeC = fc.size();
     
-    
+    map<char, vector<int>> keySet;
+    keySet= initialKey(keySet, fa, fc, sizeC, cipherset);
     //swap(da, 97, 102);
     //displayAlph(da);
-    displayCip(dc);
+    //displayCip(dc);
+
     afs.close();
 
 }
 
-
+map<char, vector<int>>& initialKey(map<char, vector<int>>& keySet, const map<char,float>& fa, const map<int,float>& fc,int sizeC, const vector<int>& cipherT) {
+    map<char,float>::const_iterator itA;
+    vector<int> temp;
+    
+    for(auto it : fc){ temp.push_back(it.first); }
+    random_shuffle(temp.begin(), temp.end());
+    
+    for(itA = fa.begin(); itA != fa.end(); ++itA){
+        int set = itA->second * sizeC + 0.5;
+        vector<int> numSet;
+        for(int i = 0; i < set; ++i){
+            numSet.push_back(temp[temp.size()-1]);
+            temp.pop_back();         
+        }
+        keySet.insert(pair<char,vector<int>>(itA->first, numSet));
+        random_shuffle(temp.begin(), temp.end());
+    }
+    return keySet;
+}
 
 vector<vector<int>>& initiDC(vector<vector<int>>& vec, vector<int>& vec2, const map<int,float>& mp) {
     int index = 1;
@@ -179,11 +201,8 @@ void swap(vector<vector<int>>& vec, int target1, int target2) {
 map<char, float>& makeFreqMap(map<char, float>& mp, const vector<vector<int>>& vec, const int size) {
     float sum = 0;
     for(size_t i = 1; i < vec.size(); ++i){
-        for(size_t j = 1; j < vec[i].size(); ++j){
-            sum += vec[i][j];
-        }
-        sum = sum / size;
-        mp.insert(pair<char, float>(vec[i][0], sum));
+        for(size_t j = 1; j < vec[i].size(); ++j){ sum += vec[i][j]; }
+        mp.insert(pair<char, float>(vec[i][0], sum/size));
         sum = 0;
     }
     return mp;
@@ -192,11 +211,8 @@ map<char, float>& makeFreqMap(map<char, float>& mp, const vector<vector<int>>& v
 map<int, float>& makeFreqMap(map<int, float>& mp, const vector<vector<int>>& vec, const int size) {
     float sum = 0;
     for(size_t i = 1; i < vec.size(); ++i){
-        for(size_t j = 1; j < vec[i].size(); ++j){
-            sum += vec[i][j];
-        }
-        sum = sum / size;
-        mp.insert(pair<char, float>(vec[i][0], sum));
+        for(size_t j = 1; j < vec[i].size(); ++j){ sum += vec[i][j]; }
+        mp[vec[i][0]] = sum / size;
         sum = 0;
     }
     return mp;
