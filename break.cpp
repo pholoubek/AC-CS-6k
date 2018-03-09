@@ -84,12 +84,9 @@ int main() {
     displayAlph(dp);
     ifs.close();
     
-    
     /*
-        Preprocess, get all cipher into array and seperated each cipher with -1 
-            
+        Cipher Diagram setup
     */
-    
     
     //  the key goes from 1 to 105
     vector<vector<int>> dc(106, vector<int>(106,0));
