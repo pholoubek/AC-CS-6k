@@ -9,7 +9,8 @@
 #include <iterator>
 using namespace std;
 
-vector<vector<int>>& initiVec(vector<vector<int>>& vec);
+vector<vector<int>>& initiDA(vector<vector<int>>& vec);
+vector<vector<int>>& initiDC(vector<vector<int>>& vec, const map<int,float>& mp);
 void displayCip(const vector<vector<int>>& vec);
 void displayAlph(const vector<vector<int>>& vec);
 void swap(vector<vector<int>>& vec, int target1, int target2);
@@ -19,12 +20,11 @@ map<int, float>& makeFreqMap(map<int, float>& mp, const vector<vector<int>>& vec
 int main() {
     ifstream ifs("test1_1.txt");
     vector<vector<int>> da(28, vector<int>(28,0));      //  diagram of count. for alphabet
-    vector<vector<int>> dc(106, vector<int>(106,0));    //  diagram of count. for cipher
     map<char, float> fa;                               //  map for alphabetic frequency
     map<int, float> fc;                                 //  map for cipher frequency
     
     //  set initial values to alph diagram
-    da = initiVec(da);   
+    da = initiDA(da);   
     
     string line;
     int sizeA = 0;
@@ -48,9 +48,7 @@ int main() {
 //        cout << x.first << " " << x.second << endl;
 //    }
     
-    // initialize the 0th row and 0th col with cipher values  
-    for(int i = 0; i < dc.size(); ++i) { dc[0][i] = i; }
-    for(int i = 0; i < dc.size(); ++i) { dc[i][0] = i; }
+
     
     ifstream afs("ciphertext.txt");
     int sizeC = 0;
@@ -58,28 +56,37 @@ int main() {
     char comma; //  to skip comma in the ciphertext file
     vector<int> cipherset;
     
-    //  push cipher onto ciphertext
+    // push cipher onto ciphertext
     // skips the last cipher since there's no comma after the nth cipher
-    while(afs >> cipher >> comma) { cipherset.push_back(cipher); }
+    while(afs >> cipher >> comma) { 
+        cipherset.push_back(cipher);
+        fc.insert(pair<int,float>(cipher,0));
+    }   
+    //  plug, it needs better solution through tokenization
     sizeC = cipherset.size();
-    afs >> cipher;  //  plug, it needs better solution through tokenization
+    afs >> cipher;  
     cipherset.push_back(cipher);
+    fc.insert(pair<int,float>(cipher,0));
     
-//    for(auto x : cipherset) {
-//        cout << x << " ";
+    
+    vector<vector<int>> dc(fc.size() + 1, vector<int>(fc.size() + 1,0));    //  diagram for ciphers, initialized for cipher which exists
+    
+    // initialize the 0th row and 0th col with cipher values  
+//    int index = 1;
+//    for(auto x : fc) {
+//        dc[index][0] = x.first;
+//        dc[0][index] = x.first;
+//        ++index;
 //    }
-//    cout << endl;
-
+    dc = initiDC(dc, fc);
+    displayCip(dc);
+    
     //  pull ciphers out of ciphertext into diagram
-    for(int i = 0; i < cipherset.size() - 1; ++i) {
-        int row = cipherset[i];
-        int col = cipherset[i + 1];
-        dc[row][col] += 1;
-    }
-    fc = makeFreqMap(fc, dc, sizeC);
-    for(auto x : fc){
-        cout << x.first << " " << x.second << endl;
-    }
+    
+    //fc = makeFreqMap(fc, dc, sizeC);
+//    for(auto x : fc){
+//        cout << x.first << " " << x.second << endl;
+//    }
     
     //swap(da, 97, 102);
     //displayAlph(da);
@@ -88,7 +95,17 @@ int main() {
 
 }
 
-vector<vector<int>>& initiVec(vector<vector<int>>& vec) {    
+vector<vector<int>>& initiDC(vector<vector<int>>& vec, const map<int,float>& mp) {
+    int index = 1;
+    for(auto x : mp) {
+        vec[index][0] = x.first;
+        vec[0][index] = x.first;
+        ++index;
+    }
+    return vec;  
+}
+
+vector<vector<int>>& initiDA(vector<vector<int>>& vec) {    
     /*
         Set the Alphabet Diagram
         <space> ... z is in range from [1,27] for rows and cols
@@ -119,14 +136,12 @@ void displayAlph(const vector<vector<int>>& vec) {
 }
 
 void displayCip(const vector<vector<int>>& vec) {
-    cout << "   ";
-    for(size_t i = 0; i < vec[0].size(); ++i) { cout << vec[0][i] << "   "; }
+    for(size_t i = 0; i < vec[0].size(); ++i) { cout << vec[0][i] << "  "; }
     cout << endl;
     for(size_t i = 1; i < vec.size(); ++i) {
         for(size_t j = 0; j < vec[i].size(); ++j) {
             if(j == 0) { cout << vec[i][0] << "   "; }
-            else { cout << vec[i][j] << "   "; }
-            
+            else { cout << vec[i][j] << "   "; }   
         }
         cout << endl;
     }
@@ -156,8 +171,8 @@ void swap(vector<vector<int>>& vec, int target1, int target2) {
 //  for each letter in Alphabet, sum a row of the matrix and divide the sum by the entire size of the message.
 map<char, float>& makeFreqMap(map<char, float>& mp, const vector<vector<int>>& vec, const int size) {
     float sum = 0;
-    for(int i = 1; i < vec.size(); ++i){
-        for(int j = 1; j < vec[i].size(); ++j){
+    for(size_t i = 1; i < vec.size(); ++i){
+        for(size_t j = 1; j < vec[i].size(); ++j){
             sum += vec[i][j];
         }
         sum = sum / size;
@@ -169,8 +184,8 @@ map<char, float>& makeFreqMap(map<char, float>& mp, const vector<vector<int>>& v
 
 map<int, float>& makeFreqMap(map<int, float>& mp, const vector<vector<int>>& vec, const int size) {
     float sum = 0;
-    for(int i = 1; i < vec.size(); ++i){
-        for(int j = 1; j < vec[i].size(); ++j){
+    for(size_t i = 1; i < vec.size(); ++i){
+        for(size_t j = 1; j < vec[i].size(); ++j){
             sum += vec[i][j];
         }
         sum = sum / size;
