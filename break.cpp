@@ -9,7 +9,7 @@ using namespace std;
 
 //  Display Matrix where 0 col && 0 row is Alphabet title
 //  3 spaces in cout due to max 3 digit occurence
-void display(const vector<vector<int>>& vec) {
+void displayAlph(const vector<vector<int>>& vec) {
     cout << " ";
     for(size_t i = 0; i < vec[0].size(); ++i) { cout << char(vec[0][i]) << "   "; }
     cout << endl;
@@ -23,6 +23,36 @@ void display(const vector<vector<int>>& vec) {
     }
 }
 
+void displayCip(const vector<vector<int>>& vec) {
+    cout << "   ";
+    for(size_t i = 0; i < vec[0].size(); ++i) { cout << vec[0][i] << "   "; }
+    cout << endl;
+    for(size_t i = 1; i < vec.size(); ++i) {
+        for(size_t j = 0; j < vec[i].size(); ++j) {
+            if(j == 0) { cout << vec[i][0] << "   "; }
+            else { cout << vec[i][j] << "   "; }
+            
+        }
+        cout << endl;
+    }
+}
+
+void swap(vector<vector<int>>& vec, int target1, int target2) { 
+    //  swap rows first
+    auto temp = vec[target1];
+    vec[target1] = vec[target2];
+    vec[target2] = temp;
+    
+    // swap columns
+    for(size_t i = 0; i < vec.size(); ++i) {
+        for(size_t j = 0; j < vec[i].size(); ++j) {
+            int temp2 = vec[i][target1];
+            vec[i][target1] = vec[i][target2];
+            vec[i][target2] = temp2;
+        }
+    }
+}
+
 
 int main() {
     ifstream ifs("test1_1.txt");
@@ -30,7 +60,7 @@ int main() {
     
     
     /*
-        Set the Alphabet Diagram 
+        Set the Alphabet Diagram
         <space> ... z is in range from [1,27] for rows and cols
     */
     dp[0][1] = 35; //  add <space> ASCII at 0th row
@@ -48,10 +78,48 @@ int main() {
             if(row < 1) { row = 1; }    
             if(col < 1) { col = 1; }
             dp[row][col] += 1;
-//            cout << "row: " << row << " col: " << col << " :" << dp[row][col] << endl;
+//            cout << "row: " << row << " col: " << col << " :" << dp[row][col] << endl;  //  use this as check 
         }
     }
-    display(dp);
+    displayAlph(dp);
+    ifs.close();
+    
+    
+    /*
+        Preprocess, get all cipher into array and seperated each cipher with -1 
+            
+    */
+    
+    
+    //  the key goes from 1 to 105
+    vector<vector<int>> dc(106, vector<int>(106,0));
+    for(int i = 0; i < dc.size(); ++i) { dc[0][i] = i; }
+    for(int i = 0; i < dc.size(); ++i) { 
+        dc[i][0] = i;
+    }
+    
+    ifstream afs("ciphertext.txt");
+    int cipher;
+    char comma;
+    vector<int> cipherset;
+    
+    //  push cipher onto ciphertext
+    while(afs >> cipher >> comma) { cipherset.push_back(cipher); } 
+    
+    //  pull ciphers out of ciphertext into diagram
+    for(int i = 0; i < cipherset.size() - 1; ++i) {
+        int row = cipherset[i];
+        int col = cipherset[i + 1];
+        dc[row][col] += 1;
+    }
+    
+    swap(dp, 97, 102);
+    displayAlph(dp);
+    //displayCip(dc);
+    afs.close();
+    
+    
+    
 
     
     
