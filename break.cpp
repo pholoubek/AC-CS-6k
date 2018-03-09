@@ -10,7 +10,7 @@
 using namespace std;
 
 vector<vector<int>>& initiDA(vector<vector<int>>& vec);
-vector<vector<int>>& initiDC(vector<vector<int>>& vec, const map<int,float>& mp);
+vector<vector<int>>& initiDC(vector<vector<int>>& vec, vector<int>& vec2, const map<int,float>& mp);
 void displayCip(const vector<vector<int>>& vec);
 void displayAlph(const vector<vector<int>>& vec);
 void swap(vector<vector<int>>& vec, int target1, int target2);
@@ -71,37 +71,44 @@ int main() {
     
     vector<vector<int>> dc(fc.size() + 1, vector<int>(fc.size() + 1,0));    //  diagram for ciphers, initialized for cipher which exists
     
-    // initialize the 0th row and 0th col with cipher values  
-//    int index = 1;
-//    for(auto x : fc) {
-//        dc[index][0] = x.first;
-//        dc[0][index] = x.first;
-//        ++index;
-//    }
-    dc = initiDC(dc, fc);
-    displayCip(dc);
+    dc = initiDC(dc, cipherset, fc);
     
-    //  pull ciphers out of ciphertext into diagram
-    
-    //fc = makeFreqMap(fc, dc, sizeC);
-//    for(auto x : fc){
-//        cout << x.first << " " << x.second << endl;
-//    }
     
     //swap(da, 97, 102);
     //displayAlph(da);
-//    displayCip(dc);
+    displayCip(dc);
     afs.close();
 
 }
 
-vector<vector<int>>& initiDC(vector<vector<int>>& vec, const map<int,float>& mp) {
+
+
+vector<vector<int>>& initiDC(vector<vector<int>>& vec, vector<int>& vec2, const map<int,float>& mp) {
     int index = 1;
     for(auto x : mp) {
         vec[index][0] = x.first;
         vec[0][index] = x.first;
         ++index;
     }
+    
+    int r = 0;
+    int c = 0;
+    for(size_t i = 0; i < vec2.size(); ++i){
+        for(size_t j = 1; j < vec[0].size(); ++j) {
+            if(vec2[i] == vec[0][j]) {
+                r = j;
+                break;
+            }
+        }
+        for(size_t k = 1; k < vec[0].size(); ++k) {
+            if(vec2[i + 1] == vec[0][k]) {
+                c = k;
+                break;
+            }
+        }
+        vec[r][c] += 1;
+    }
+    
     return vec;  
 }
 
