@@ -1,3 +1,11 @@
+/*
+  @author: Petr Holoubek
+  @version: 1.0
+  @description:
+    This program uses HillClimb approach to break Homophonic cipher by rotating matrices of 
+    letters/symbols generated from the message space and given cipher space and finding the least
+    deviation of frequency. 
+*/
 #include <string>
 #include <cmath>
 #include <iostream>
@@ -127,6 +135,7 @@ private:
     vector<vector<int>> dp;
     vector<int> cipherDomain;
     vector<int> cipherText; 
+    //  This was given frequency of the Message Space
     map<char,int> fa {
         {'#',19},{'a',7},{'b',1},{'c',2},
         {'d',4},{'e',10},{'f',2},{'g',2},
