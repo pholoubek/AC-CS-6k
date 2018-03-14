@@ -5,6 +5,10 @@
     This program uses HillClimb approach to break Homophonic cipher by rotating matrices of 
     letters/symbols generated from the message space and given cipher space and finding the least
     deviation of frequency. 
+    
+  @to do: 
+    It needs flexibile R within RandomInitialKey function. The diagram for punitive keys should have 
+    derived swaps according to the current key and Diagram of Crypto Letters. 
 */
 #include <string>
 #include <cmath>
