@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Image Encryption App</title>
+		<meta name="description" content="This is a web app">
+		<meta name="keywords" content="web app">
+		<meta name="author" content="Janina Soriano">
+	</head>
+
+
+	<body>
+		<!-- Logo/Sitename -->
+		<h2>Image Encryption App</h2>
+
+		
+	    <!-- Upload Image -->
+		
+		<strong>ENCRYPT IMAGE</strong>
+
+		<!-- Since it's not just type test, have to use multipart form data. Code from w3schools -->
+		<!-- Allow only images using accept="image/*" from stack overflow -->
+		<form action = "/encryptStep2" method="POST" enctype="multipart/form-data">
+			<input type="file" name="image" accept="image/*">
+
+			<br>
+
+			<p>Encryption Scheme: </p>
+
+			<input type="radio" name="encryptionScheme" value="AES" checked>AES<br>
+			<input type="radio" name="encryptionScheme" value="DES" checked>DES<br>
+			<input type="radio" name="encryptionScheme" value="HYBRID" checked>HYBRID<br>
+			
+
+			<button type="submit" value="Submit">SUBMIT</button>
+		</form>
+
+		<form action="/">
+	    	<button type="submit" name="home" value="home">HOME</button>
+	    </form>
+
+    	<form action="/decrypt">
+	    	<button type="submit" name="decrypt" value="decrypt">DECRYPT</button>
+	    </form>
+	</body>
+</html>

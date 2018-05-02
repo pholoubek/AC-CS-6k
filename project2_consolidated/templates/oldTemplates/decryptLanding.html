@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Image Encryption App</title>
+		<meta name="description" content="This is a web app">
+		<meta name="keywords" content="web app">
+		<meta name="author" content="Janina Soriano">
+	</head>
+
+
+	<body>
+	<!-- Logo/Sitename -->
+	<h2>Image Encryption App</h2>
+
+	<h1>Original Image: </h1>
+	<img src = "/static/{{data[0]}}" width="480">
+	<br>
+	<b>Decryption Scheme: </b> {{data[1]}}
+	<br>
+	<b>Mode: </b> {{data[3]}}
+	<br>
+	<h1> Decrypted Image: </h1>
+	<img src = "/static/{{data[4]}}" width="480">
+
+	<form action="/">
+	    <button type="submit" name="home" value="home">HOME</button>
+	</form>
+	
+	<form action="/encrypt" method="POST">
+		<button type="submit" name="encrypt" value="encrypt">ENCRYPT</button>
+	</form>
+
+	</body>
+</html>
